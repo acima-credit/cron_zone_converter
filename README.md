@@ -1,9 +1,9 @@
 # CronZoneConverter
 
-## Translate local Cron lines into UTC time 
+## Translate local Cron lines into any time zone 
 
 The objective of this gem is to translate a single cron line in a time zone into 
-a single/multiple cron line/s in UTC time. 
+a single/multiple cron line/s into any time zone (defaults to UTC). 
 
 ## Usage
 
@@ -13,7 +13,7 @@ The first (required) parameter to the `convert` method is the cron line:
 
 ```ruby
 CronZoneConverter.convert '0 16 * * 1-5 MST'
-# => ["0 23 * * 1,2,3,4,5 MST"]
+# => ["0 23 * * 1,2,3,4,5"]
 ```
 
 We use [Fugit::Cron](https://github.com/floraison/fugit) to parse the cron line. 
@@ -21,7 +21,7 @@ We use [Fugit::Cron](https://github.com/floraison/fugit) to parse the cron line.
 
 ```ruby
 CronZoneConverter.convert '0 16 * * 1-5 MST'
-# => ["0 23 * * 1,2,3,4,5 MST"]
+# => ["0 23 * * 1,2,3,4,5"]
 ```
 
 But if you don't pass or setup a valid time zone you will get an error:
@@ -31,19 +31,19 @@ CronZoneConverter.convert '0 16,20 * * 1-5'
 CronZoneConverter
 ```
 
-### Time Zones
+### Local Time Zone
 
-The second parameter is the cron line zone. 
+The second parameter is the local cron line time zone. 
 This gem uses [ActiveSupport](https://github.com/rails/rails/tree/master/activesupport) 
-to identify available time zones. So you can setup the cron line time zone by:
+to identify available time zones. So you can setup the time zone by:
 
 * Passing a `zone` parameter: a `String` (zone name) or and `ActiveSupport::TimeZone`: 
 
 ```ruby
 CronZoneConverter.convert '0 16 * * 1-5', 'MST'
-# => ["0 23 * * 1,2,3,4,5 MST"]
+# => ["0 23 * * 1,2,3,4,5"]
 CronZoneConverter.convert '0 16 * * 1-5', Time.find_zone('MST')
-# => ["0 23 * * 1,2,3,4,5 MST"]
+# => ["0 23 * * 1,2,3,4,5"]
 ```
 
 * A timezone defined in the cron line like we saw before:
@@ -59,11 +59,32 @@ Time.zone =  'MST'
 CronZoneConverter.convert '0 16 * * 1-5'
 ```
 
+### Remote Time Zone
+
+The third parameter is the remote time zone.  
+You can setup the time zone by:
+
+* Passing a `zone` parameter: a `String` (zone name) or and `ActiveSupport::TimeZone`: 
+
+```ruby
+CronZoneConverter.convert '0 16 * * 1-5', 'MST', 'EST'
+# => ["0 18 * * 1,2,3,4,5"]
+CronZoneConverter.convert '0 16 * * 1-5', Time.find_zone('EST')
+# => ["0 18 * * 1,2,3,4,5"]
+```
+
+* Or **use the default (`'UTC'`)**:
+
+```ruby
+CronZoneConverter.convert '0 16 * * 1-5', 'MST'
+# => ["0 23 * * 1,2,3,4,5"]
+```
+
 ## Result
 
 We always return an array with one or more cron lines (`String`).
 
-### Why multiple lines?
+### Why an array? Why multiple lines?
 
 Given that you could have multiple hours defined in a cron line when you convert that into some other time zone 
 you could end up with some of the hours falling in one day and some other hours falling in another day. 
