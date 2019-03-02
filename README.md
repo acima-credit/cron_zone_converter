@@ -1,4 +1,4 @@
-# CronToUtc
+# CronZoneConverter
 
 ## Translate local Cron lines into UTC time 
 
@@ -12,7 +12,7 @@ a single/multiple cron line/s in UTC time.
 The first (required) parameter to the `convert` method is the cron line:
 
 ```ruby
-CronToUtc.convert '0 16 * * 1-5 MST'
+CronZoneConverter.convert '0 16 * * 1-5 MST'
 # => ["0 23 * * 1,2,3,4,5 MST"]
 ```
 
@@ -20,14 +20,14 @@ We use [Fugit::Cron](https://github.com/floraison/fugit) to parse the cron line.
 `Fugit` does allow parsing the time zone from the cron line like so:
 
 ```ruby
-CronToUtc.convert '0 16 * * 1-5 MST'
+CronZoneConverter.convert '0 16 * * 1-5 MST'
 # => ["0 23 * * 1,2,3,4,5 MST"]
 ```
 
 But if you don't pass or setup a valid time zone you will get an error:
 
 ```ruby
-CronToUtc.convert '0 16,20 * * 1-5'
+CronZoneConverter.convert '0 16,20 * * 1-5'
 CronZoneConverter
 ```
 
@@ -40,23 +40,23 @@ to identify available time zones. So you can setup the cron line time zone by:
 * Passing a `zone` parameter: a `String` (zone name) or and `ActiveSupport::TimeZone`: 
 
 ```ruby
-CronToUtc.convert '0 16 * * 1-5', 'MST'
+CronZoneConverter.convert '0 16 * * 1-5', 'MST'
 # => ["0 23 * * 1,2,3,4,5 MST"]
-CronToUtc.convert '0 16 * * 1-5', Time.find_zone('MST')
+CronZoneConverter.convert '0 16 * * 1-5', Time.find_zone('MST')
 # => ["0 23 * * 1,2,3,4,5 MST"]
 ```
 
 * A timezone defined in the cron line like we saw before:
 
 ```ruby
-CronToUtc.convert '0 16,20 * * 1-5 MST'
+CronZoneConverter.convert '0 16,20 * * 1-5 MST'
 ```
 
 * Or defining a global time zone:
 
 ```ruby
 Time.zone =  'MST'
-CronToUtc.convert '0 16 * * 1-5'
+CronZoneConverter.convert '0 16 * * 1-5'
 ```
 
 ## Result
@@ -71,14 +71,14 @@ you could end up with some of the hours falling in one day and some other hours 
 #### Single line
 
 ```ruby
-CronToUtc.convert '0 16,20 * * 1-5 MST'
+CronZoneConverter.convert '0 16,20 * * 1-5 MST'
 # => ['0 23 * * 1,2,3,4,5', '0 3 * * 2,3,4,5,6']
 ```
 
 #### Multiple lines
 
 ```ruby
-CronToUtc.convert '0 20,21 * * 1-5 MST'
+CronZoneConverter.convert '0 20,21 * * 1-5 MST'
 # => ['0 3,4 * * 2,3,4,5,6']
 ``` 
 
@@ -123,4 +123,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the CronToUtc project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/acima-credit/cron_zone_converter/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the CronZoneConverter project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/acima-credit/cron_zone_converter/blob/master/CODE_OF_CONDUCT.md).
