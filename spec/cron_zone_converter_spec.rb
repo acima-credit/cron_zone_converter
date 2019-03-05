@@ -30,6 +30,9 @@ RSpec.describe CronZoneConverter do
           it 'no hours' do
             expect(described_class.convert('0 * 5,10 * 1-5')).to eq(['0 * 5,10 * 1-5'])
           end
+          it 'step-only hours' do
+            expect(described_class.convert('0 * */4 * 1-5')).to eq(['0 * */4 * 1-5'])
+          end
           context 'same day' do
             it 'single hour' do
               expect(described_class.convert('0 12 * * 1-5')).to eq(['0 12 * * 1-5'])
@@ -55,6 +58,9 @@ RSpec.describe CronZoneConverter do
           end
           it 'multiple hours' do
             expect(described_class.convert('0 12,13 * * 1-5')).to eq(['0 18,19 * * 1,2,3,4,5'])
+          end
+          it 'step and single hour' do
+            expect(described_class.convert('0 */12,13 * * 1-5')).to eq(['0 6,18,19 * * 1,2,3,4,5'])
           end
         end
         context 'different day' do

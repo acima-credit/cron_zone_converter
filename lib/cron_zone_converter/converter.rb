@@ -65,6 +65,8 @@ module CronZoneConverter
     def needs_changes?
       return false if local_zone.name == remote_zone.name
       return false if base.hours.nil?
+      return false if base.original.split(' ')[1] =~ %r{^\*/\d{1,2}$}
+
       true
     end
 

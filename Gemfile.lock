@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cron_zone_converter (0.1.0)
+    cron_zone_converter (0.1.1)
       activesupport
       fugit
 
